@@ -1,0 +1,197 @@
+
+# Tanto los organismos públicos como los cargos públicos poseen un nombre.
+# Por ejemplo, un nombre de organismo  público puede ser "Ministerio de Salud"
+# y un nombre de cargo público puede ser "Secretario". Además, los organismos
+# y cargos son creados en algún momento y bajo una normativa.
+
+=OrganismoPúblico =CargoPúblico
+    +nombre +objetivo
+        $texto
+    +fechaInicio +fechaTérmino
+        $fecha
+    +normativa
+        =Normativa
+
+# En particular, los organismos poseen un nombre abreviado o sigla. Por
+# ejemplo, para el Ministerio de Salud usamos la sigla MINSAL.
+
+=OrganismoPúblico
+    +sigla
+        $texto
+
+# La relación de componenteOrgánica nos permite describir la relación
+# estructural de los organismos especificando que un organismo
+# forma parte de otro. Por ejemplo, la Biblioteca del Congreso Nacional
+# tiene como componente orgánica a la Dirección.
+
+=OrganismoPúblico
+    +componenteOrgánica
+        =OrganismoPúblico
+
+# Dentro de cada organismo podemos definir cargos. Por ejemplo, Director es
+# un cargo que puede definirse dentro del organismo Dirección.
+
+=OrganismoPúblico
+    +cargo
+        =CargoPúblico
+
+# Otro tipo de dependencia jerárquica es la relación de superior directo,
+# que indica que una entidad tiene autoridad sobre otra.
+# Por ejemplo la Secretaria Ejecutiva tiene como superior directo a la
+# Directora y esta tiene como superior directo al Honorable Consejo de
+# Biblioteca. También podríamos asumir que la Directora es superior
+# directo de la Dirección, para indicar que ella dirige ese organismo y que
+# el Honorable Consejo de Biblioteca es superior Directo de la Dirección.
+
+=OrganismoPúblico =CargoPúblico
+    +superiorDirecto
+        =OrganismoPúblico =CargoPúblico
+
+# Ciertos organismos trabajan a pedido de otros, por ejemplo, el Área de
+# Gestión tiene como clientes a la Dirección y todas las unidades de la
+# Biblioteca, mientras que la Dirección tiene como clientes a la Honorable
+# Comisión de Biblioteca, la comunidad BCN, los ciudadanos y demás
+# instituciones públicas.
+
+=OrganismoPúblico
+    +cliente
+        =OrganismoPúblico =SegmentoCiudadano =PersonaJurídica
+
+# Existen varias maneras de establecer las remuneraciones de los empleados de
+# planta y contrata. Para el general de los empleados se tiene una planilla
+# los ítemes de la escala dependen de los parámetros estamento y grado, en
+# cambio, para los empleados del Sector Salud que trabajan por jornada,
+# los parámetros suelen ser trienio y horas (según la Ley Nº19.664). No
+# obstante, en el caso de la escala asociada a la ley Nº15.076 el Ministerio
+# de salud no está publicando las horas, y tiene un columna llamada
+# "Valor 75 N. D y F.", que probablemente indiquen el valor que tienen 75
+# horas trabajadas, independientemente de si sean de noche, día o en
+# feriados.
+
+=EscalaRemuneraciones
+    # Necesitamos identificar el organismo al que corresponde la escala.
+    +organismo
+        =OrganismoPúblico
+    +item
+        =ItemEscalaRemuneraciones
+    # Cada escala tiene parámetros P1,P2... de donde calcular el monto
+    # de las remuneraciones mediante una función f(P1,P2,...). Un parámetro
+    # presente se debe encontrar en todos los ítemes de la escala.
+    +parámetroPresenteEscalaRemuneraciones
+        =ParámetroEscalaRemuneraciones
+    # en cambio, un parámetro ausente se omite de la escala porque existe
+    # una fórmula que permite calcular las componentes que dependen de él.
+    +parámetroAusenteEscalaRemuneraciones
+        =ParámetroEscalaRemuneraciones
+    # Las componentes pueden ser constantes que tienen un valor asignado
+    # para un subconjunto de los parámetros presentes.
+    +componenteConstanteEscalaRemuneraciones
+        =ComponenteConstanteEscalaRemuneraciones
+    # Las componentes variables son valores que dependen tanto de parámetros
+    # presentes como de parámetros variables. En ellas se debe indicar el
+    # número asignado al parámetro (por ejemplo 75 horas) que indicará que
+    # en la componente respectiva de los ítemes se coloca el valor por
+    # 75 horas. Ello debe permitir calcular el valor de la componente para
+    # un valor (por ejemplo número de horas) distinto.
+    +fechaInicio +fechaTérmino
+        $fecha
+    +unidadMonetaria                      # si es común a toda la escala
+        $número
+    +normativa                            # que define la escala
+        =Normativa
+
+=PartámetroEscalaRemuneraciones
+    +nombre
+        $texto
+    +tipo
+        =Tipo =Clase
+
+=ComponenteFijaEscalaRemuneraciones =ComponenteVariableEscalaRemuneraciones
+    +nombre
+        $texto
+
+=ComponenteVariableEscalaRemuneraciones
+    +parámetroReferencia
+        =ParámetroEscalaRemuneraciones
+    +valorReferencia
+        ANY                               # esto depende del tipo del parámetro
+
+=ItemEscalaRemuneraciones
+    +valorParámetro
+        =ValorParámetro                   # esto depende del tipo del parámetro
+    +valorComponente
+        =ValorComponente
+    +remuneraciónBrutaMensualizada
+        $número                           # si es que está definida o...
+    +unidadMonetaria
+        $unidadMonetaria                  # si no es la de la escala
+
+=ValorParámetro
+    +parámetro
+        =ParámetroEscalaRemuneraciones
+    +valor
+        ANY
+
+=ValorComponente
+    +componente
+        =ComponenteFijaEscalaRemuneraciones =ComponenteVariableEscalaRemuneraciones
+    +valor
+        $número
+
+# Los cargos de los organismos pueden ser ocupados por a través de las
+# contrataciones.
+#
+# A esta definición de restricciones podrían agregarse las siguientes
+# restricciones:
+#
+# - A una contratación asociada a un cargo, se le podría llamar 
+#   contratación de planta, y una contratación de planta no puede
+#   ser establecida entre una entidad pública y una persona jurídica,
+#   es decir, los contratados deben ser siempre personas naturales.
+
+=Contratación
+    +cargo
+        =CargoPúblico
+    +remuneraciones
+        =RemuneracionesParametrizadas
+
+# Las remuneraciones del personal de planta están asociadas
+# como manera para regular los montos.
+
+=RemuneracionesParametrizadas
+    +estamento
+        $estamento
+
+# Existen tres tipos de contrataciones para personas naturales.
+
+=ContrataciónPlanta =ContrataciónHonorarios =ContrataciónCódigoTrabajo
+    +contratado
+        =PersonaNatural
+
+# Las adquisiciones pueden ser asociadas tanto a personas
+# naturales como a jurídicas.
+
+=ContrataciónAdquisición
+    +contratado
+        =PersonaNatural =PersonaJurídica
+
+# Las contrataciones transcurren durante un período de tiempo.
+
+=ContrataciónPlanta =ContrataciónHonorarios =ContrataciónCódigoTrabajo =ContrataciónAdquisición
+    +fechaInicio +fechaTérmino
+        $fecha
+
+# Las personas naturales y jurídicas poseen un RUT identificatorio.
+
+=PersonaNatural =PersonaJurídica
+    +rut
+        $rut
+
+# Las personas naturales y jurídicas poseen "nombres".
+
+=PersonaNatural
+    +nombres +apellidoPaterno +apellidoMaterno
+        $texto
+=PersonaJurídica
+    +razónSocial +nombreFantasía
+        $texto
