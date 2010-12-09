@@ -1,0 +1,301 @@
+\documentclass[letterpaper,titlepage]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\usepackage{graphicx}
+
+\title{Marcado de la Información Parlamentaria \\ con RDFa}
+\author{Biblioteca del Congreso Nacional}
+
+\begin{document}
+
+\maketitle
+
+\thispagestyle{empty}
+
+\abstract
+
+Este informe propone soluciones para el marcado con RDFa de la
+información asociada a parlamentarios, publicada por la Biblioteca del
+Congreso Nacional (BCN) a través de la Web. Esta propuesta se
+componen de tres etapas. Primero, se define un esquema para marcar
+con RDFa. Luego, en base al esquema propuesto, se presentan
+vocabularios existentes, o definen nuevos cuando no se encuentran
+vocabularios apropiados, para usarlos en el marcado de los recursos
+definidos en el esquema. Finalmente, se genera una serie de
+recomendaciones para implementar el marcado. \medskip
+
+Este informe surge en el contexto de una asesoría solicitada por el
+Área de Arquitectura de la Información de la BCN. El informe es
+redactado por un asesor en el área, en base a las
+ideas y supervisión del equipo del Área de Arquitectura de la
+Información.
+
+\newpage
+
+\thispagestyle{empty}
+
+\null
+
+\vfill
+
+\begin{description}
+\item[Derechos] \hfill \\
+  Este informe es publicado por la BCN
+  bajo licencia Creative Commons Atribución-Licenciar Igual 3.0. \\
+  \url{http://creativecommons.org/licenses/by-sa/3.0/deed.es_CL}
+\item[Estatus] \hfill \\
+  Este documento es un borrador en progreso.
+  Las fuentes de este informe pueden descargarse desde: \\
+  \url{http://github.com/danielhz/chile_schema}.
+\item[Editores] \hfill \\
+  {\sf Daniel Hernández} \url{<daniel@degu.cl>} \\
+  {Consultor en publicación de datos en la Web.} \\
+  {\sf Roxana Donoso} \\
+  {Jefe Área Arquitectura de Información, BCN.} \\
+  {\sf Felipe Almazan} \\
+  {Arquitecto de Información, BCN.} \\
+  {\sf Claudio Gutierrez} \\
+  {Académico, Departamento de Ciencias de la Computación, Universidad de Chile}
+\end{description}
+
+\newpage
+
+\tableofcontents
+%\listoffigures
+
+\newpage
+
+\section{Introducción}
+
+¡Este es un borrador! Se irá completando a medida que se vaya
+desarrollando el proyecto.
+
+\section{Programa}
+
+Esta sección describe el programa para el desarrollo de este
+informe. Eventualmente esta sección será removida al término de la
+asesoría.
+
+\begin{enumerate}
+\item {\em Identificación de datos a modelar}. En esta etapa se
+  identificará a los participantes en la información que se va a
+  modelar. Esto implica identificar candidatos a clases y candidatos a
+  predicados. Esto es un proceso que podría abarcar prácticamente todo
+  el desarrollo, puesto que suele ocurrir que se descubran elementos
+  que no habían sido considerados. No obstante, la identificación de
+  datos a modelar espera hacerse en las primeras dos
+  reuniones\footnote{Ya llevamos una reunión}. La metodología a seguir
+  para identificar los datos a modelar va a ser la conversación con
+  los integrantes del equipo de la BCN, la presentación de los
+  conceptos identificados por parte del equipo asesor en RDF y la
+  validación de estos mismos por parte del equipo de la BCN.
+\item {\em Exploración de vocabularios existentes}. Paralelamente a la
+  identificación de datos a modelar, se irán identificando
+  vocabularios existentes que podrían tener relación con los elementos
+  identificados. Con estos antecedentes se podrá tomar la
+  decisión de reutilizar los vocabularios existentes o de utilizar
+  nuevos vocabularios.
+\item {\em Taller de modelado}. Se debiera realizar un pequeño taller
+  de modelado usando triples, que ayude al equipo de la BCN a
+  comprender mejor lo que se está haciendo. Probablemente esto debiera
+  hacerse en la tercera reunión, luego de haber identificado gran
+  parte de los datos a modelar y luego que se desarrollará un poco más
+  la intuición sobre el modelado con triples.
+\item {\em Identificadores para objetos}. Para cada tipo de objeto se
+  debe proponer un formato para expresar sus identificadores como
+  URIs. Esto podría hacerse en la cuarta sesión.
+\item {\em Identificadores para predicados y clases}. Paralelo a la
+  identificación de datos se irán validando los nombres para los
+  predicados y las clases, lo que podrían quedar claros hacia la
+  quinta sesión.
+\item {\em Taller de RDFa}. Luego de haber modelado la
+  información, se debiera dejar una sesión para hacer un taller de uso
+  de RDFa, donde se indicará como hacer el marcado. Probablemente está
+  será la quinta sesión.
+\item {\em Marcado}. Se debe estudiar las posibilidades de marcado en
+  las herramientas de publicación usadas por la BCN, para poder ver
+  hasta que nivel las herramientas podrían facilitar el marcado,
+  hacerse un trabajo manual o implementar una herramienta que lo
+  facilite. Según las herramientas usadas y la estructura de los
+  documentos XHTML publicados, se verá como introducir el marcado en
+  ellos utilizando RDFa. Esta tarea podría ser en la sexta sesión.
+\end{enumerate}
+
+\section{Preguntas}
+
+Estas son algunas preguntas para responder, que se irán quitando a
+medida que sean respondidas:
+
+\begin{enumerate}
+\item ¿Los períodos parlamentarios pueden ser de 4 u 8 años o todos
+  los períodos son de 4 años y los senadores son elegidos por dos
+  períodos?
+\end{enumerate}
+
+\section{Técnica de modelamiento}
+
+El modelamiento se basa en RDF, que es en la actualidad el marco
+conceptual que sustenta iniciativas como la Web Semántica y el
+movimiento Linked Data.
+
+En RDF la unidad de los datos es el triple, es decir, una expresión
+compuesta de tres partes: sujeto, predicado y objeto. Cada una de
+estas partes es representada por una URI o un nodo blanco. Además, los
+objetos pueden tomar valores literales. Las URI, corresponden a los
+identificadores en la web (Uniform Resource Identifier) que hoy en
+día, para fomentar la adopción en otros idiomas, están siendo
+reemplazados por las IRIs (Internationalized Resource Identifier).
+
+Ante la necesidad de identificar triples para poder hacer afirmaciones
+sobre ellos sin recurrir a técnicas de reificación, se ha extendido el
+uso de grafos, que, permiten asociar un conjunto de triples con una
+IRI que representa el nombre del grafo. En la práctica los grafos
+pueden verse como una extensión al modelo de triples mediante una
+cuarta componente, por lo que las tuplas $(g,s,p,o)$ son también
+llamadas quads.
+
+El lenguaje de consulta para RDF, SPARQL, y varias de sus
+implementaciones existentes incorporan hoy el concepto de
+grafos. También existen varias extensiones, aun no del todo
+estandarizadas que utilizan el concepto de grafos, como TriG, TriX y
+N-Quads. No obstante lo anterior, aun no existe una manera de publicar
+quads en RDFa, por lo que en los modelos presentados no se hará uso
+del concepto de grafos.
+
+Los estándares están sujetos a un constante cambio, no obstante la
+información publicada debe persistir. Por ello en este informe los
+esquemas son presentados en dos faces. En la primera se utiliza el
+español para definir los conceptos y sus relaciones, sin entrar a
+restringir demasiado el esquemas. En la segunda fase el esquema
+desarrollado es mapeado a vocabularios existentes y usando los
+estándares de moda. De este modo, se gana independencia de estándares
+y vocabularios y se genera una base conceptual mínima para que la
+información sea mapeada a nuevos estándares.
+
+La no restricción del esquema con relaciones, con cardinalidades,
+jerarquías de clases y definición de clases disjuntas, entre otros
+elementos de lenguajes de representación del conocimiento como OWL,
+sigue las siguientes razones: $a$) quienes son responsables de publicar
+los datos conocen de ellos lo suficiente como para ingresar los datos
+de la forma adecuada, y $b$) modelar utilizando lenguajes como OWL
+resulta, intentando alcanzar la perfección en la representación del
+conocimiento, resulta demasiado trabajoso para los beneficios que
+ofrece, pudiendo incluso, enlentecer el proceso de publicación.
+
+En vez de usar lenguajes de representación del conocimiento, en este
+informe se opta por utilizar lenguajes de modelado conceptual (como
+por ejemplo Entidad-Relación). En general los lenguajes de modelado
+conceptual poseen, tanto una semántica formal, como una representación
+gráfica que resulta especialmente útil para la discusión sobre los
+modelos durante el proceso de modelado por un equipo formado por
+una parte experta en el lenguaje y otra experta en los conceptos a
+modelar. La semántica del lenguaje de modelado a utilizar en este
+informe se define como sigue: \medskip
+
+\noindent {\bf Definición:} Dado un modelo $\mathcal{M}$, definido
+como un conjunto de triples $(S,p,O)$, donde $S$ y $O$ representan
+clases y $p$ representa a un predicado, decimos que: un conjunto de
+triples $T$ satisface el modelo $\mathcal{M}$ si, para todo triple
+$(s,p,o)$ en $T$, existe un triple $(S,p,O)$ en $\mathcal{M}$ tal que
+$(s,o) \in S \times O$. \medskip
+
+Dada la naturaleza positiva del lenguaje RDF, haciendo uso del
+predicado \url{rdf:type} podría responderse positivamente a la
+pregunta sobre si un conjunto de triples satisface un modelo. No
+obstante, responder a la pregunta sobre si no lo satisface requiere
+suponer negar el predicado \url{rdf:type}, lo que no es posible en
+con la semántica de RDF. Bajo ciertas reglas aportadas por lenguajes
+como OWL detectar datos que no satisfagan el modelo podría ser
+posible, no obstante, tal como se indico en la razón $b$), se cree que
+no es necesario, a este nivel, poner tanto énfasis en la validación
+automática de los datos publicados.
+
+\section{Identificación de datos a modelar}
+
+\subsection{Clases}
+
+\input{node_class_PersonaNatural.tex}
+\input{node_class_PeriodoParlamentario.tex}
+\input{node_class_Diputado.tex}
+\input{node_class_Senador.tex}
+\input{node_class_TerminoAnticipado.tex}
+
+\subsubsection{\#Geolocalización}
+
+\begin{description}
+  \input{class_Geolocalizacion.tex}
+\end{description}
+
+\input{node_class_Ciudad.tex}
+\input{node_class_Region.tex}
+\input{node_class_Provincia.tex}
+\input{node_class_Circunscripcion.tex}
+\input{node_class_Distrito.tex}
+\input{node_class_Comuna.tex}
+\input{node_class_ProcesoEleccionario.tex}
+\input{node_class_Eleccion.tex}
+\input{node_class_Candidato.tex}
+\input{node_class_ResultadoElectoral.tex}
+\input{node_class_Pacto.tex}
+\input{node_class_PartidoPolitico.tex}
+\input{node_class_Militancia.tex}
+\input{node_class_LegislaturaCamaraDiputados.tex}
+\input{node_class_LegislaturaCamaraSenadores.tex}
+\input{node_class_SesionParlamentaria.tex}
+\input{node_class_AsistenciaSesionParlamentaria.tex}
+\input{node_class_ProyectoDeAcuerdoCamaraDiputados.tex}
+
+\subsubsection{\#Ley}
+
+\begin{description}
+  \input{class_Ley.tex}
+\end{description}
+
+\subsection{Predicados}
+
+\input{predicates.tex}
+
+\section{Potencial de los datos}
+
+La información publicada podría ser útil para organizaciones de la
+sociedad civil, tales como la fundación Ciudadano Inteligente o Ojo
+Con el Congreso, que la presentan de manera que pueda influir en las
+votaciones, mediante ciudadanos mejor informados. Información sobre
+las pertenencias a partidos o a bancadas podría ayudar a la población
+a hacerse un mapa más detallado del congreso en relación a los
+parlamentarios y a las agrupaciones de estos, como los partidos. Estas
+relaciones serían aún más finas si se vinculan con otras fuentes de
+información como son las votaciones. Ello permitiría definir espacios
+muy similares a los que se definen en los estudios de componentes
+principales o a la definición de grafos donde los arcos pueden ser
+votaciones similares. Acotando estos estudios por materias (medio
+ambiente, economía, educación,...) podría obtenerse otras
+visualizaciones interesantes.
+
+\newpage
+\appendix
+
+\section{Diagramas de esquemas}
+
+\subsection{Personas naturales}
+\begin{center}
+  \includegraphics[width=\textwidth]{dia-persona.pdf}
+\end{center}
+
+\subsection{Diputados y senadores}
+\begin{center}
+  \includegraphics[width=\textwidth]{dia-diputados-senadores.pdf}
+\end{center}
+
+\subsection{Subdivisiones territoriales}
+\begin{center}
+  \includegraphics[width=\textwidth]{dia-lugares.pdf}
+\end{center}
+
+\subsection{Procesos eleccionarios}
+\begin{center}
+  \includegraphics[width=\textwidth]{dia-elecciones.pdf}
+\end{center}
+
+\end{document}

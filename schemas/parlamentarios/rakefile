@@ -1,0 +1,32 @@
+
+task :default => "documento.pdf"
+
+figures = []
+
+# SYNOPSIS
+#        dia [-c] [--credits] [-e OUTPUT] [--export=OUTPUT] [-L LAYER,LAYER,...] [--show-layers=LAYER,LAYER,...] [-h] [--help] [-n] [--nosplash] [-s WxH] [--size=WxH] [-t FORMAT] [--filter=FORMAT]
+#            [-v] [--version] [file ...]
+
+Dir["dia-*.dia"].each do |dia|
+  svg = dia.sub(/.dia$/, ".svg")
+  pdf = dia.sub(/.dia$/, ".pdf")
+  file svg => dia do
+    system "dia -e #{svg} -t svg #{dia}"
+  end
+  file pdf => svg do
+    system "inkscape -z --file=#{svg} --export-pdf=#{pdf}"
+  end
+  figures << pdf
+end
+
+file "documento.pdf" => figures + ["documento.tex", "schema.yaml"] + Dir['node_*.tex'] do
+  system "./schema_to_tex.rb"
+  system "pdflatex documento.tex"
+  system "pdflatex documento.tex"
+end
+
+task :clobber do
+  system "rm -f *~ *.toc *.log *.lof *.aux class_*.tex predicate_*.tex"
+  system "rm -f predicates.tex documento.pdf"
+  system "rm -f dia-*.svg dia-*.pdf"
+end

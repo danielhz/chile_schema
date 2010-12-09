@@ -1,0 +1,105 @@
+"#PersonaNatural":
+  "@nombres": "$texto"
+  "@apellidoPaterno": "$texto"
+  "@apellidoMaterno": "$texto"
+  "@género": "$texto"
+  "@fechaNacimiento": "$fecha"
+  "@rut": "$rut"
+"#PeríodoParlamentario":
+  "@fechaInicio": "$fecha"
+  "@fechaTérmino": "$fecha"
+"#Diputado":
+  "@persona": "#PersonaNatural"
+  "@períodoParlamentario": "#PeríodoParlamentario"
+  "@términoAnticipado": "#TérminoAnticipado"
+  "@jurisdicción": "#Distrito"
+"#Senador":
+  "@persona": "#PersonaNatural"
+  "@períodoParlamentario": "#PeríodoParlamentario"
+  "@términoAnticipado": "#TérminoAnticipado"
+  "@jurisdicción": "#Circunscripción"
+"#TérminoAnticipado":
+  "@fecha": "$fecha"
+  "@causa": "$texto"
+  "@sucesor": "#PersonaNatural"
+"#Geolocalización":
+  "@latitud": "$geocoordenada"
+  "@longitud": "$geocoordenada"
+"#Ciudad":
+  "@nombre": "$texto"
+  "@código": "$texto"
+  "@región": "#Región"
+"#Región":
+  "@nombre": "$texto"
+  "@código": "$texto"
+  "@capital": "#Ciudad"
+"#Provincia":
+  "@nombre": "$texto"
+  "@código": "$texto"
+  "@capital": "#Ciudad"
+  "@región": "#Región"
+"#Circunscripción":
+  "@nombre": "$texto"
+  "@código": "$texto"
+  "@región": "#Región"
+"#Distrito":
+  "@nombre": "$texto"
+  "@código": "$texto"
+  "@circunscripción": "#Circunscripción"
+"#Comuna":
+  "@nombre": "$texto"
+  "@código": "$texto"
+  "@provincia": "#Provincia"
+  "@distrito": "#Distrito"
+"#ProcesoEleccionario":
+  "@fecha": "$fecha"
+"#Elección":
+  "@procesoEleccionario": "#ProcesoEleccionario"
+  "@cargo": "#Diputado #Senador"
+"#Candidato":
+  "@persona": "#PersonaNatural"
+  "@vinculación": "#Pacto #Partido"
+  "@votos": "$número"
+  "@porcentaje": "$número"
+  "@resultado": "#ResultadoElectoral"
+"#ResultadoElectoral":
+  "@nombre": "$texto"
+  "@descripción": "$texto"
+"#Pacto":
+  "@nombre": "$texto"
+  "@integrante": "#Partido #PersonaNatural"
+"#PartidoPolítico":
+  "@nombre": "$texto"
+  "@código": "$texto"
+"#Militancia":
+  "@persona": "#PersonaNatural"
+  "@partidoPolítico": "#Partido"
+  "@fechaInicio": "$fecha"
+  "@fechaTérmino": "$fecha"
+"#LegislaturaCámaraDiputados":
+  "@número": "$número"
+  "@fechaInicio": "$fechaInicio"
+  "@fechaTérmino": "$fechaTérmino"
+"#LegislaturaCámaraSenadores":
+  "@número": "$número"
+  "@fechaInicio": "$fechaInicio"
+  "@fechaTérmino": "$fechaTérmino"
+"#SesiónParlamentaria":
+  "@legislatura": "#LegislaturaCámaraDiputados #LegislaturaCámaraSenadores"
+  "@número": "$número"
+  "@fecha": "$fecha"
+"#AsistenciaSesiónParlamentaria":
+  "@parlamentario": "#PersonaNatural"
+  "@asiste": "$booleano"
+  "@observación": "$texto"
+"#ProyectoDeAcuerdoCámaraDiputados":
+  "@sesión": "#SesiónParlamentaria"
+  "@horaIngreso": "$hora"
+  "@sesiónIngreso": "#Sesión"
+  "@número": "$número"
+  "@título": "$texto"
+  "@resolución": "$texto"
+"#Ley":
+  "@número": "$número"
+  "@título": "$texto"
+  "@fechaPromulgación": "$fecha"
