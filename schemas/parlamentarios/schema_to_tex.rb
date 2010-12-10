@@ -79,6 +79,6 @@ end
 Predicates.each_key { |pred| write_predicate(pred) }
 
 predicate_index = File.new('predicates.tex', 'w')
-Dir["node_predicate_*.tex"].each do |f|
+Dir["node_predicate_*.tex"].sort.each do |f|
   predicate_index << "\\input{#{f}}\n"
 end
