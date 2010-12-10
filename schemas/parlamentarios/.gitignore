@@ -1,0 +1,11 @@
+*~
+*.toc
+*.log
+*.lof
+*.aux
+class_*.tex
+predicate_*.tex
+predicates.tex
+documento.pdf
+dia-*.svg
+dia-*.pdf
