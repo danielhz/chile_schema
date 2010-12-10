@@ -45,12 +45,12 @@ def write_class(c)
   file     = Classes[c][:file]
   pred_in  = Classes[c][:in]
   pred_out = Classes[c][:out]
-  file << "\\item[Atributos salientes:] \\hfill \\\\\n"
+  file << "\\item[{\\sf Atributos salientes:}] \\hfill \\\\\n"
   file << "  \\begin{tabular}{ll}\n"
   file << "    {\\em predicado} & {\\em objetos} \\\\\n"
   pred_out.each { |pred,v| file << "    #{pred}: & #{v.map{ |x| '\\' + x }.join(' ')} \\\\\n" }
   file << "  \\end{tabular}\n"
-  file << "\\item[Atributos entrantes:] \\hfill \\\\\n"
+  file << "\\item[{\\sf Atributos entrantes:}] \\hfill \\\\\n"
   file << "  \\begin{tabular}{ll}\n"
   file << "    {\\em predicado} & {\\em sujetos} \\\\\n"
   pred_in.each { |pred,v| file << "    #{pred}: & #{v.map{ |x| '\\' + x }.join(' ')} \\\\\n" }
@@ -62,7 +62,7 @@ Classes.each_key { |c| write_class(c) }
 def write_predicate(pred)
   file  = Predicates[pred][:file]
   pairs = Predicates[pred][:pairs]
-  file << "\\item[Elementos relacionados:] \\hfill \\\\\n"
+  file << "\\item[{\\sf Elementos relacionados:}] \\hfill \\\\\n"
   file << "  \\begin{tabular}{ll}\n"
   file << "    {\\em sujeto} & {\\em objeto} \\\\\n"
   pairs.each { |e| file << "    \\#{e[0]} & \\#{e[1]} \\\\\n" }
