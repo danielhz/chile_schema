@@ -133,7 +133,8 @@ medida que sean respondidas:
   períodos?
 \end{enumerate}
 
-\section{Técnica de modelamiento}
+\section{Técnica de modelado}
+\label{tecnica-de-modelado}
 
 El modelamiento se basa en RDF, que es en la actualidad el marco
 conceptual que sustenta iniciativas como la Web Semántica y el
@@ -211,9 +212,39 @@ posible, no obstante, tal como se indico en la razón $b$), se cree que
 no es necesario, a este nivel, poner tanto énfasis en la validación
 automática de los datos publicados.
 
+El lenguaje de modelado conceptual propuesto posee una representación
+gráfica que es explicada en la sección \ref{diagramas}, donde también
+se presentan diagramas que facilitan la comprensión de los modelos
+propuestos.
+
 \section{Identificación de datos a modelar}
 
+Tal como se propuso en la sección \ref{tecnica-de-modelado}, las
+componentes de los triples del esquema son o clases o predicados. No
+obstante en la práctica se diferencian las clases en clases
+propiamente tales, que agrupan recursos identificadas por una IRI o un
+nodo blanco, y tipos de datos, que definen conjuntos de literales,
+tales como números, booleanos, texto, etc. Para facilitar la
+identificación, se usarán los prefijos \#, @ y \$ para distinguir
+entre clases, predicados y tipos de datos, respectivamente. Además,
+por convención, se usará UperCamelCase para los nombres de clases y
+lowerCamelCase para los nombres de predicados y tipos de datos. Por
+ejemplo, el esquema considera la clase \#PersonaNatural, el predicado
+@nombre y el tipo de datos \$texto.
+
+Esta sección se divide en dos subsecciones, \ref{clases} y
+\ref{predicados}, que describen las clases y los predicados usados en
+el esquema, respectivamente.
+
 \subsection{Clases}
+\label{clases}
+
+En esta sección se describirán las clases del esquema
+propuesto, indicando para cada una de ellas las propiedades entrantes
+y las propiedades salientes. Cada propiedad entrante de una clase $A$,
+corresponde a un par $(p,O)$ tal que $(A,p,O)$ está en el modelo y
+cada propiedad saliente corresponde a un par $(p,S)$ tal que $(S,p,A)$
+está en el modelo.
 
 \input{node_class_PersonaNatural.tex}
 \input{node_class_PeriodoParlamentario.tex}
@@ -253,6 +284,7 @@ automática de los datos publicados.
 \end{description}
 
 \subsection{Predicados}
+\label{predicados}
 
 \input{predicates.tex}
 
@@ -277,6 +309,7 @@ visualizaciones interesantes.
 \appendix
 
 \section{Diagramas de esquemas}
+\label{diagramas}
 
 \subsection{Personas naturales}
 \begin{center}
