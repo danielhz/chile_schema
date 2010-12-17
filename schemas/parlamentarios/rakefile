@@ -1,13 +1,15 @@
 
+require 'schema.rb'
+
 task :default => "documento.pdf"
 
 figures = []
 
-# SYNOPSIS
-#        dia [-c] [--credits] [-e OUTPUT] [--export=OUTPUT] [-L LAYER,LAYER,...] [--show-layers=LAYER,LAYER,...] [-h] [--help] [-n] [--nosplash] [-s WxH] [--size=WxH] [-t FORMAT] [--filter=FORMAT]
-#            [-v] [--version] [file ...]
-
-Dir["dia-*.dia"].each do |dia|
+# Para cada archivo que calza con el patrón "dia-*.dia, creamos dos tareas:
+# para convertirlo en SVG y luego en PDF. Cada uno de estos documentos PDF
+# serán incluidos en el documento final, por lo que son agregados al arreglo
+# figure para indicar que son requisitos en la tarea documento.pdf.
+Dir["diagrams/dia-*.dia"].each do |dia|
   svg = dia.sub(/.dia$/, ".svg")
   pdf = dia.sub(/.dia$/, ".pdf")
   file svg => dia do
@@ -19,14 +21,87 @@ Dir["dia-*.dia"].each do |dia|
   figures << pdf
 end
 
-file "documento.pdf" => figures + ["documento.tex", "schema.yaml"] + Dir['node_*.tex'] do
+node_predicates = Dir['node_predicates/node_*.tex']
+node_classes = Dir['node_classes/*node_*.tex']
+
+def file_name(res)
+  file_name = res.sub(/^#/, 'node_classes/class_').sub(/^@/, 'node_predicates/predicate_')
+  file_name = file_name.gsub('á','a').gsub('é','e').gsub('í','i').gsub('ó','o').gsub('ú','u')
+  file_name = file_name.gsub('Á','A').gsub('É','E').gsub('Í','I').gsub('Ó','O').gsub('Ú','U')
+  file_name = file_name.gsub('ñ','n').gsub('Ñ','N')
+  file_name + ".tex"
+end
+
+def write_class(c, file)
+  file << "\\item[{\\sf Atributos salientes:}] \\hfill \\\\\n"
+  file << "  \\begin{tabular}{ll}\n"
+  file << "    {\\em predicado} & {\\em objetos} \\\\\n"
+  c[:out].each { |pred,v| file << "    #{pred}: & #{v.map{ |x| '\\' + x }.join(' ')} \\\\\n" }
+  file << "  \\end{tabular}\n"
+  file << "\\item[{\\sf Atributos entrantes:}] \\hfill \\\\\n"
+  file << "  \\begin{tabular}{ll}\n"
+  file << "    {\\em predicado} & {\\em sujetos} \\\\\n"
+  c[:in].each { |pred,v| file << "    #{pred}: & #{v.map{ |x| '\\' + x }.join(' ')} \\\\\n" }
+  file << "  \\end{tabular}\n"
+end
+
+#Classes.each_key { |c| write_class(c) }
+
+def write_predicate(pred, file)
+  file << "\\item[{\\sf Elementos relacionados:}] \\hfill \\\\\n"
+  file << "  \\begin{tabular}{ll}\n"
+  file << "    {\\em sujeto} & {\\em objeto} \\\\\n"
+  pred[:pairs].each { |e| file << "    \\#{e[0]} & \\#{e[1]} \\\\\n" }
+  file << "  \\end{tabular}\n"
+  # unless File.exist?("node_" + file_name(pred))
+  #   file = File.new("node_" + file_name(pred), 'w')
+  #   file << "\\subsubsection{#{pred}}\n\n"
+  #   file << "\\begin{description}\n"
+  #   file << "  \\input{#{file_name(pred)}}"
+  #   file << "\\end{description}\n"
+  # end
+end
+
+schema = Schema.new('schema.yaml')
+
+file 'node_predicates/predicates.tex' => 'schema.yaml' do
+  schema.elements(:predicates).each do |k|
+    puts file_name(k[:name])
+    file = File.new(file_name(k[:name]), "w")
+    write_predicate(k, file)
+  end
+  f = File.new("node_predicates/predicates.tex", "w")
+  f << "\\subsection{Predicados en el dominio ``Parlamento''}\n"
+  schema.elements(:predicates, ['Parlamento']).each do |k|
+    f << "\\include{#{file_name(k[:name])}}\n"
+  end
+end
+
+file 'node_classes/classes.tex' => 'schema.yaml' do
+  schema.elements(:classes).each do |k|
+    puts file_name(k[:name])
+    file = File.new(file_name(k[:name]), "w")
+    write_class(k, file)
+  end
+  f = File.new("node_classes/classes.tex", "w")
+  f << "\\subsection{Clases en el dominio ``Parlamento''}\n"
+  schema.elements(:classes, ['Parlamento']).each do |k|
+    f << "\\include{#{file_name(k[:name])}}\n"
+  end
+end
+
+# Para crear el archivo PDF...
+file "documento.pdf" => figures + ["documento.tex", "schema.yaml"] + node_predicates + node_classes do
   system "./schema_to_tex.rb"
   system "pdflatex documento.tex"
   system "pdflatex documento.tex"
 end
 
+# Para limpiar...
 task :clobber do
   system "rm -f *~ *.toc *.log *.lof *.aux class_*.tex predicate_*.tex"
-  system "rm -f predicates.tex documento.pdf"
-  system "rm -f dia-*.svg dia-*.pdf"
+  system "rm -f node_predicates/*~ node_predicates/predicates.tex node_predicates/predicate_*.tex"
+  system "rm -f node_classes/*~ node_classes/classes.tex node_classes/class_*.tex"
+  system "rm -f documento.pdf"
+  system "rm -f figures/*~ figures/dia-*.svg figures/dia-*.pdf"
 end

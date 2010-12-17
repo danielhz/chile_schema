@@ -4,7 +4,7 @@
 \usepackage{url}
 \usepackage{graphicx}
 
-\title{Marcado de la Información Parlamentaria \\ con RDFa}
+\title{Marcado de la Información sobre Parlamentarios \\ con RDFa}
 \author{Biblioteca del Congreso Nacional}
 
 \begin{document}
@@ -246,47 +246,12 @@ corresponde a un par $(p,O)$ tal que $(A,p,O)$ está en el modelo y
 cada propiedad saliente corresponde a un par $(p,S)$ tal que $(S,p,A)$
 está en el modelo.
 
-\input{node_class_PersonaNatural.tex}
-\input{node_class_PeriodoParlamentario.tex}
-\input{node_class_Diputado.tex}
-\input{node_class_Senador.tex}
-\input{node_class_TerminoAnticipado.tex}
-
-\subsubsection{\#Geolocalización}
-
-\begin{description}
-  \input{class_Geolocalizacion.tex}
-\end{description}
-
-\input{node_class_Ciudad.tex}
-\input{node_class_Region.tex}
-\input{node_class_Provincia.tex}
-\input{node_class_Circunscripcion.tex}
-\input{node_class_Distrito.tex}
-\input{node_class_Comuna.tex}
-\input{node_class_ProcesoEleccionario.tex}
-\input{node_class_Eleccion.tex}
-\input{node_class_Candidato.tex}
-\input{node_class_ResultadoElectoral.tex}
-\input{node_class_Pacto.tex}
-\input{node_class_PartidoPolitico.tex}
-\input{node_class_Militancia.tex}
-\input{node_class_LegislaturaCamaraDiputados.tex}
-\input{node_class_LegislaturaCamaraSenadores.tex}
-\input{node_class_SesionParlamentaria.tex}
-\input{node_class_AsistenciaSesionParlamentaria.tex}
-\input{node_class_ProyectoDeAcuerdoCamaraDiputados.tex}
-
-\subsubsection{\#Ley}
-
-\begin{description}
-  \input{class_Ley.tex}
-\end{description}
+\input{node_classes/classes.tex}
 
 \subsection{Predicados}
 \label{predicados}
 
-\input{predicates.tex}
+\input{node_predicates/predicates.tex}
 
 \section{Potencial de los datos}
 
@@ -313,22 +278,22 @@ visualizaciones interesantes.
 
 \subsection{Personas naturales}
 \begin{center}
-  \includegraphics[width=\textwidth]{dia-persona.pdf}
+  \includegraphics[width=\textwidth]{diagrams/dia-persona.pdf}
 \end{center}
 
 \subsection{Diputados y senadores}
 \begin{center}
-  \includegraphics[width=\textwidth]{dia-diputados-senadores.pdf}
+  \includegraphics[width=\textwidth]{diagrams/dia-diputados-senadores.pdf}
 \end{center}
 
 \subsection{Subdivisiones territoriales}
 \begin{center}
-  \includegraphics[width=\textwidth]{dia-lugares.pdf}
+  \includegraphics[width=\textwidth]{diagrams/dia-lugares.pdf}
 \end{center}
 
 \subsection{Procesos eleccionarios}
 \begin{center}
-  \includegraphics[width=\textwidth]{dia-elecciones.pdf}
+  \includegraphics[width=\textwidth]{diagrams/dia-elecciones.pdf}
 \end{center}
 
 \end{document}

@@ -6,6 +6,7 @@
 class_*.tex
 predicate_*.tex
 predicates.tex
+classes.tex
 documento.pdf
 dia-*.svg
 dia-*.pdf
