@@ -71,9 +71,9 @@ file 'node_predicates/predicates.tex' => 'schema.yaml' do
     write_predicate(k, file)
   end
   f = File.new("node_predicates/predicates.tex", "w")
-  f << "\\subsection{Predicados en el dominio ``Parlamento''}\n"
+#  f << "\\subsection{Predicados en el dominio ``Parlamento''}\n"
   schema.elements(:predicates, ['Parlamento']).each do |k|
-    f << "\\include{#{file_name(k[:name])}}\n"
+    f << "\\input{#{file_name(k[:name]).sub('/', '/node_')}}\n"
   end
 end
 
@@ -84,24 +84,27 @@ file 'node_classes/classes.tex' => 'schema.yaml' do
     write_class(k, file)
   end
   f = File.new("node_classes/classes.tex", "w")
-  f << "\\subsection{Clases en el dominio ``Parlamento''}\n"
+#  f << "\\subsection{Clases en el dominio ``Parlamento''}\n"
   schema.elements(:classes, ['Parlamento']).each do |k|
-    f << "\\include{#{file_name(k[:name])}}\n"
+    f << "\\input{#{file_name(k[:name]).sub('/', '/node_')}}\n"
   end
 end
 
 # Para crear el archivo PDF...
-file "documento.pdf" => figures + ["documento.tex", "schema.yaml"] + node_predicates + node_classes do
+file "documento.pdf" => figures + ["documento.tex", "schema.yaml"] + node_predicates + node_classes + ['node_classes/classes.tex', 'node_predicates/predicates.tex'] do
   system "./schema_to_tex.rb"
   system "pdflatex documento.tex"
   system "pdflatex documento.tex"
 end
 
-# Para limpiar...
-task :clobber do
+task :clean do
   system "rm -f *~ *.toc *.log *.lof *.aux class_*.tex predicate_*.tex"
   system "rm -f node_predicates/*~ node_predicates/predicates.tex node_predicates/predicate_*.tex"
   system "rm -f node_classes/*~ node_classes/classes.tex node_classes/class_*.tex"
-  system "rm -f documento.pdf"
   system "rm -f figures/*~ figures/dia-*.svg figures/dia-*.pdf"
+end
+
+# Para limpiar...
+task :clobber => :clean do
+  system "rm -f documento.pdf"
 end
