@@ -8,5 +8,5 @@ predicate_*.tex
 predicates.tex
 classes.tex
 documento.pdf
-dia-*.svg
-dia-*.pdf
+documents/*/diagrams/*.svg
+documents/*/diagrams/*.pdf
