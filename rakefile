@@ -1,5 +1,5 @@
 
-require 'schema.rb'
+require 'lib/schema.rb'
 
 task :default => "documento.pdf"
 
@@ -62,7 +62,7 @@ def write_predicate(pred, file)
   # end
 end
 
-schema = Schema.new('schema.yaml')
+schema = Schema.new('schemas/yaml/schema.yaml')
 
 file 'node_predicates/predicates.tex' => 'schema.yaml' do
   schema.elements(:predicates).each do |k|
@@ -98,13 +98,15 @@ file "documento.pdf" => figures + ["documento.tex", "schema.yaml"] + node_predic
 end
 
 task :clean do
-  system "rm -f *~ *.toc *.log *.lof *.aux class_*.tex predicate_*.tex"
-  system "rm -f node_predicates/*~ node_predicates/predicates.tex node_predicates/predicate_*.tex"
-  system "rm -f node_classes/*~ node_classes/classes.tex node_classes/class_*.tex"
-  system "rm -f figures/*~ figures/dia-*.svg figures/dia-*.pdf"
+  # system "rm -f *~ *.toc *.log *.lof *.aux class_*.tex predicate_*.tex"
+  # system "rm -f node_predicates/*~ node_predicates/predicates.tex node_predicates/predicate_*.tex"
+  # system "rm -f node_classes/*~ node_classes/classes.tex node_classes/class_*.tex"
+  # system "rm -f figures/*~ figures/dia-*.svg figures/dia-*.pdf"
+  system "rm -f schemas/classes/*.aux"
+  system "rm -f schemas/predicates/*.aux"
 end
 
 # Para limpiar...
 task :clobber => :clean do
-  system "rm -f documento.pdf"
+  # system "rm -f documento.pdf"
 end
