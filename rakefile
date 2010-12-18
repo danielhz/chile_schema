@@ -5,6 +5,33 @@ task :default => "documento.pdf"
 
 figures = []
 
+Dir["documents/*"].each do |dir|
+  domain = dir.sub(/^documents\//, '')
+  # Para cada archivo que calza con el patrón "dia-*.dia, creamos dos tareas:
+  # para convertirlo en SVG y luego en PDF. Cada uno de estos documentos PDF
+  # serán incluidos en el documento final, por lo que son agregados al arreglo
+  # figure para indicar que son requisitos en la tarea documento.pdf.
+  figures = []
+  Dir[dir + "/diagrams/*.dia"].each do |dia|
+    svg = dia.sub(/.dia$/, ".svg")
+    pdf = dia.sub(/.dia$/, ".pdf")
+    file svg => dia do
+      system "dia -e #{svg} -t svg #{dia}"
+    end
+    file pdf => svg do
+      system "inkscape -z --file=#{svg} --export-pdf=#{pdf}"
+    end
+    figures << pdf
+  end
+  desc "Se generan los diagramas para el dominio #{domain}."
+  task (domain + "_dia").to_sym => figures
+  desc "Se borran los diagramas generados para el dominio #{domain}."
+  task (domain + "_dia_clean").to_sym do
+    system "rm -f documents/#{domain}/diagrams/*.svg"
+    system "rm -f documents/#{domain}/diagrams/*.pdf"
+  end
+end
+
 # Para cada archivo que calza con el patrón "dia-*.dia, creamos dos tareas:
 # para convertirlo en SVG y luego en PDF. Cada uno de estos documentos PDF
 # serán incluidos en el documento final, por lo que son agregados al arreglo
