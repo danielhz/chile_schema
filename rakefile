@@ -104,7 +104,6 @@ Dir['documents/*'].each do |dir|
   file dir + '/predicates.tex' => documents[dir][:predicate_files] do
     puts "Generating #{dir}/predicates.tex"
     f = File.new(dir + "/predicates.tex", "w")
-    puts predicates_dir
     Dir[predicates_dir + "/*.tex"].sort.each do |k|
       f << "\\input{#{k.sub(dir + '/predicates/', '../../schemas/predicates/')}}\n"
     end
@@ -131,7 +130,6 @@ Dir['documents/*'].each do |dir|
   file dir + '/classes.tex' => documents[dir][:class_files] do
     puts "Generating #{dir}/classes.tex"
     f = File.new(dir + "/classes.tex", "w")
-    puts classes_dir
     Dir[classes_dir + "/*.tex"].sort.each do |k|
       f << "\\input{#{k.sub(dir + '/classes/', '../../schemas/classes/')}}\n"
     end
@@ -147,8 +145,6 @@ Dir['documents/*'].each do |dir|
     system "cd #{dir} && pdflatex documento.tex"
   end
 end
-
-puts documents.keys
 
 task :documents => documents.keys.map { |k| k + '/documento.pdf' }
 
