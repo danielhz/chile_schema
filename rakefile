@@ -1,7 +1,7 @@
 
 require 'lib/schema.rb'
 
-task :default => "documento.pdf"
+task :default => :documents
 
 figures = []
 
@@ -39,7 +39,7 @@ node_classes    = Dir['node_classes/*node_*.tex']
 # archivos TEX. Esto porque se van a inlcuir y el método input no soporta
 # caracteres extendidos.
 def file_name(res)
-  file_name = res.sub(/^#/, 'class_').sub(/^@/, 'predicate_')
+  file_name = res.sub(/^#/, '').sub(/^@/, '')
   file_name = file_name.gsub('á','a').gsub('é','e').gsub('í','i').gsub('ó','o').gsub('ú','u')
   file_name = file_name.gsub('Á','A').gsub('É','E').gsub('Í','I').gsub('Ó','O').gsub('Ú','U')
   file_name = file_name.gsub('ñ','n').gsub('Ñ','N')
@@ -81,17 +81,17 @@ schema  = Schema.new
 schemas = Dir['schemas/yaml/*.yaml']
 schemas.each { |yaml| schema.add(yaml) }
 
-predicate_files = []
-class_files     = []
+documents = {}
 
 # Genera todos las relaciones para los predicados en cada documento.
 Dir['documents/*'].each do |dir|
+  documents[dir] = { :predicate_files => [], :class_files => [] }
   predicates_dir = dir + "/predicates"  
   Dir.mkdir predicates_dir if Dir[predicates_dir].empty?
   schema.elements(:predicates).each do |k|
     predicate_name = file_name(k[:name])
     predicate_file  = File.join(predicates_dir, predicate_name)
-    predicate_files << predicate_file
+    documents[dir][:predicate_files] << predicate_file
     desc "Generate file #{predicate_file}"
     file predicate_file do
       puts "#creating #{file_name(k[:name])}"
@@ -99,14 +99,14 @@ Dir['documents/*'].each do |dir|
     end
   end
   desc "Generate files for predicates in #{dir}/predicates."
-  task (dir.sub(/^documents\//, '') + '_predicates').to_sym => predicate_files
+  task (dir.sub(/^documents\//, '') + '_predicates').to_sym => documents[dir][:predicate_files]
   desc "Generate file #{dir}/predicates.tex"
-  file dir + '/predicates.tex' => predicate_files do
+  file dir + '/predicates.tex' => documents[dir][:predicate_files] do
     puts "Generating #{dir}/predicates.tex"
     f = File.new(dir + "/predicates.tex", "w")
     puts predicates_dir
-    Dir[predicates_dir + "/predicate_*.tex"].each do |k|
-      f << "\\input{#{k.sub(dir + '/predicates/predicate_', '../schemas/predicates/')}}\n"
+    Dir[predicates_dir + "/*.tex"].sort.each do |k|
+      f << "\\input{#{k.sub(dir + '/predicates/', '../../schemas/predicates/')}}\n"
     end
   end
 end
@@ -118,7 +118,7 @@ Dir['documents/*'].each do |dir|
   schema.elements(:classes).each do |k|
     class_name = file_name(k[:name])
     class_file  = File.join(classes_dir, class_name)
-    class_files << class_file
+    documents[dir][:class_files] << class_file
     desc "Generate file #{class_file}"
     file class_file do
       puts "#creating #{file_name(k[:name])}"
@@ -126,24 +126,31 @@ Dir['documents/*'].each do |dir|
     end
   end
   desc "Generate files for classes in #{dir}/classes."
-  task (dir.sub(/^documents\//, '') + '_classes').to_sym => class_files
+  task (dir.sub(/^documents\//, '') + '_classes').to_sym => documents[dir][:class_files]
   desc "Generate file #{dir}/classes.tex"
-  file dir + '/classes.tex' => class_files do
+  file dir + '/classes.tex' => documents[dir][:class_files] do
     puts "Generating #{dir}/classes.tex"
     f = File.new(dir + "/classes.tex", "w")
     puts classes_dir
-    Dir[classes_dir + "/class_*.tex"].each do |k|
-      f << "\\input{#{k.sub(dir + '/classes/class_', '../schemas/classes/')}}\n"
+    Dir[classes_dir + "/*.tex"].sort.each do |k|
+      f << "\\input{#{k.sub(dir + '/classes/', '../../schemas/classes/')}}\n"
     end
   end
 end
 
 # Para crear el archivo PDF...
-file "documento.pdf" => figures + ["documento.tex", "schema.yaml"] + node_predicates + node_classes + ['node_classes/classes.tex', 'node_predicates/predicates.tex'] do
-  system "./schema_to_tex.rb"
-  system "pdflatex documento.tex"
-  system "pdflatex documento.tex"
+Dir['documents/*'].each do |dir|
+  document = dir + "/documento.pdf"
+  file document => figures + [document.sub(/.pdf$/, '.tex')] + [dir + '/classes.tex', dir + '/predicates.tex'] do
+    system "cd #{dir} && pdflatex documento.tex"
+    system "cd #{dir} && pdflatex documento.tex"
+    system "cd #{dir} && pdflatex documento.tex"
+  end
 end
+
+puts documents.keys
+
+task :documents => documents.keys.map { |k| k + '/documento.pdf' }
 
 task :clean do
   # system "rm -f *~ *.toc *.log *.lof *.aux class_*.tex predicate_*.tex"
@@ -152,11 +159,15 @@ task :clean do
   # system "rm -f figures/*~ figures/dia-*.svg figures/dia-*.pdf"
   system "rm -f schemas/classes/*.aux"
   system "rm -f schemas/predicates/*.aux"
-  system "rm -f #{class_files.join(' ')}"
-  system "rm -f #{predicate_files.join(' ')}"
+  documents.keys.each do |dir|
+    system "rm -f #{documents[dir][:class_files].join(' ')}"
+    system "rm -f #{documents[dir][:predicate_files].join(' ')}"
+  end
 end
 
 # Para limpiar...
 task :clobber => :clean do
-  # system "rm -f documento.pdf"
+  documents.keys.each do |dir|
+    system "rm -f #{dir}/documento.pdf"
+  end
 end
