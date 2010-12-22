@@ -81,10 +81,12 @@ schema  = Schema.new
 schemas = Dir['schemas/yaml/*.yaml']
 schemas.each { |yaml| schema.add(yaml) }
 
+predicate_files = []
+class_files     = []
+
 # Genera todos las relaciones para los predicados en cada documento.
 Dir['documents/*'].each do |dir|
-  predicates_dir = dir + "/predicates"
-  predicate_files = []
+  predicates_dir = dir + "/predicates"  
   Dir.mkdir predicates_dir if Dir[predicates_dir].empty?
   schema.elements(:predicates).each do |k|
     predicate_name = file_name(k[:name])
@@ -104,21 +106,35 @@ Dir['documents/*'].each do |dir|
     f = File.new(dir + "/predicates.tex", "w")
     puts predicates_dir
     Dir[predicates_dir + "/predicate_*.tex"].each do |k|
-      f << "\\input{#{k.sub(dir + '/predicate_', '../schemas/predicates/')}}\n"
+      f << "\\input{#{k.sub(dir + '/predicates/predicate_', '../schemas/predicates/')}}\n"
     end
   end
 end
 
-file 'node_classes/classes.tex' => 'schema.yaml' do
+# Genera todos las relaciones para las clases en cada documento.
+Dir['documents/*'].each do |dir|
+  classes_dir = dir + "/classes"
+  Dir.mkdir classes_dir if Dir[classes_dir].empty?
   schema.elements(:classes).each do |k|
-    puts file_name(k[:name])
-    file = File.new(file_name(k[:name]), "w")
-    write_class(k, file)
+    class_name = file_name(k[:name])
+    class_file  = File.join(classes_dir, class_name)
+    class_files << class_file
+    desc "Generate file #{class_file}"
+    file class_file do
+      puts "#creating #{file_name(k[:name])}"
+      write_class(k, File.new(class_file, "w"))
+    end
   end
-  f = File.new("node_classes/classes.tex", "w")
-#  f << "\\subsection{Clases en el dominio ``Parlamento''}\n"
-  schema.elements(:classes, ['Parlamento']).each do |k|
-    f << "\\input{#{file_name(k[:name]).sub('/', '/node_')}}\n"
+  desc "Generate files for classes in #{dir}/classes."
+  task (dir.sub(/^documents\//, '') + '_classes').to_sym => class_files
+  desc "Generate file #{dir}/classes.tex"
+  file dir + '/classes.tex' => class_files do
+    puts "Generating #{dir}/classes.tex"
+    f = File.new(dir + "/classes.tex", "w")
+    puts classes_dir
+    Dir[classes_dir + "/class_*.tex"].each do |k|
+      f << "\\input{#{k.sub(dir + '/classes/class_', '../schemas/classes/')}}\n"
+    end
   end
 end
 
@@ -136,6 +152,8 @@ task :clean do
   # system "rm -f figures/*~ figures/dia-*.svg figures/dia-*.pdf"
   system "rm -f schemas/classes/*.aux"
   system "rm -f schemas/predicates/*.aux"
+  system "rm -f #{class_files.join(' ')}"
+  system "rm -f #{predicate_files.join(' ')}"
 end
 
 # Para limpiar...
