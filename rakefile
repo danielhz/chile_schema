@@ -139,7 +139,7 @@ end
 # Para crear el archivo PDF...
 Dir['documents/*'].each do |dir|
   document = dir + "/documento.pdf"
-  file document => figures + [document.sub(/.pdf$/, '.tex')] + [dir + '/classes.tex', dir + '/predicates.tex'] do
+  file document => figures + [document.sub(/.pdf$/, '.tex')] + [dir + '/classes.tex', dir + '/predicates.tex'] + schemas do
     system "cd #{dir} && pdflatex documento.tex"
     system "cd #{dir} && pdflatex documento.tex"
     system "cd #{dir} && pdflatex documento.tex"

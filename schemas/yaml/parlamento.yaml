@@ -2,13 +2,6 @@
 - domain:
   name: "Parlamento"
   schema:
-    "#PersonaNatural":
-      "@nombres": "$texto"
-      "@apellidoPaterno": "$texto"
-      "@apellidoMaterno": "$texto"
-      "@género": "$texto"
-      "@fechaNacimiento": "$fecha"
-      "@rut": "$rut"
     "#PeríodoParlamentario":
       "@fechaInicio": "$fecha"
       "@fechaTérmino": "$fecha"
