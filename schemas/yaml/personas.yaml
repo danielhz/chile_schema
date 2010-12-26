@@ -1,0 +1,10 @@
+- domain:
+  name: "Personas"
+  schema:
+    "#PersonaNatural":
+      "@nombres": "$texto"
+      "@apellidoPaterno": "$texto"
+      "@apellidoMaterno": "$texto"
+      "@género": "$texto"
+      "@fechaNacimiento": "$fecha"
+      "@rut": "$rut"

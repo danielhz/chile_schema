@@ -1,0 +1,48 @@
+---
+- domain:
+  name: "Parlamento"
+  schema:
+    "#PeríodoParlamentario":
+      "@fechaInicio": "$fecha"
+      "@fechaTérmino": "$fecha"
+    "#Diputado":
+      "@persona": "#PersonaNatural"
+      "@períodoParlamentario": "#PeríodoParlamentario"
+      "@términoAnticipado": "#TérminoAnticipado"
+      "@jurisdicción": "#Distrito"
+    "#Senador":
+      "@persona": "#PersonaNatural"
+      "@períodoParlamentario": "#PeríodoParlamentario"
+      "@términoAnticipado": "#TérminoAnticipado"
+      "@jurisdicción": "#Circunscripción"
+    "#TérminoAnticipado":
+      "@fecha": "$fecha"
+      "@causa": "$texto"
+      "@sucesor": "#PersonaNatural"
+    "#LegislaturaCámaraDiputados":
+      "@número": "$número"
+      "@fechaInicio": "$fechaInicio"
+      "@fechaTérmino": "$fechaTérmino"
+    "#LegislaturaCámaraSenadores":
+      "@número": "$número"
+      "@fechaInicio": "$fechaInicio"
+      "@fechaTérmino": "$fechaTérmino"
+    "#SesiónParlamentaria":
+      "@legislatura": "#LegislaturaCámaraDiputados #LegislaturaCámaraSenadores"
+      "@número": "$número"
+      "@fecha": "$fecha"
+    "#AsistenciaSesiónParlamentaria":
+      "@parlamentario": "#PersonaNatural"
+      "@asiste": "$booleano"
+      "@observación": "$texto"
+    "#ProyectoDeAcuerdoCámaraDiputados":
+      "@sesión": "#SesiónParlamentaria"
+      "@horaIngreso": "$hora"
+      "@sesiónIngreso": "#Sesión"
+      "@número": "$número"
+      "@título": "$texto"
+      "@resolución": "$texto"
+    "#Ley":
+      "@número": "$número"
+      "@título": "$texto"
+      "@fechaPromulgación": "$fecha"

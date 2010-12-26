@@ -47,17 +47,29 @@ def file_name(res)
 end
 
 # Esta función escribe las asociaciones de una clase en un archivo TEX.
-def write_class(c, file)
+def write_class(c, file, classes)
   file << "\\item[{\\sf Atributos salientes:}] \\hfill \\\\\n"
   file << "  \\begin{tabular}{ll}\n"
   file << "    {\\em predicado} & {\\em objetos} \\\\\n"
-  c[:out].each { |pred,v| file << "    #{pred}: & #{v.map{ |x| '\\' + x }.join(' ')} \\\\\n" }
+  c[:out].each do |pred,v|
+    out_classes = v.select{ |c| classes.include? c or /^\$/ === c}
+    unless out_classes.empty?
+      file << "    #{pred}: & #{out_classes.map{ |x| '\\' + x }.join(' ')} \\\\\n"
+    end
+  end
   file << "  \\end{tabular}\n"
-  file << "\\item[{\\sf Atributos entrantes:}] \\hfill \\\\\n"
-  file << "  \\begin{tabular}{ll}\n"
-  file << "    {\\em predicado} & {\\em sujetos} \\\\\n"
-  c[:in].each { |pred,v| file << "    #{pred}: & #{v.map{ |x| '\\' + x }.join(' ')} \\\\\n" }
-  file << "  \\end{tabular}\n"
+  unless c[:in].nil? or c[:in].empty?
+    file << "\\item[{\\sf Atributos entrantes:}] \\hfill \\\\\n"
+    file << "  \\begin{tabular}{ll}\n"
+    file << "    {\\em predicado} & {\\em sujetos} \\\\\n"
+    c[:in].each do |pred,v|
+      in_classes = v.select{ |c| classes.include? c }
+      unless out_classes.empty?
+        file << "    #{pred}: & #{v.map{ |x| '\\' + x }.join(' ')} \\\\\n"
+      end
+    end
+    file << "  \\end{tabular}\n"
+  end
 end
 
 # Esta función escribe las asociaciones de un predicado en un archivo TEX.
@@ -88,7 +100,8 @@ Dir['documents/*'].each do |dir|
   documents[dir] = { :predicate_files => [], :class_files => [] }
   predicates_dir = dir + "/predicates"  
   Dir.mkdir predicates_dir if Dir[predicates_dir].empty?
-  schema.elements(:predicates).each do |k|
+  included_domains = YAML::load_file(dir + '/domains.yaml')
+  schema.elements(:predicates, included_domains).each do |k|
     predicate_name = file_name(k[:name])
     predicate_file  = File.join(predicates_dir, predicate_name)
     documents[dir][:predicate_files] << predicate_file
@@ -114,14 +127,16 @@ end
 Dir['documents/*'].each do |dir|
   classes_dir = dir + "/classes"
   Dir.mkdir classes_dir if Dir[classes_dir].empty?
-  schema.elements(:classes).each do |k|
+  included_domains = YAML::load_file(dir + '/domains.yaml')
+  classes = schema.elements(:classes, included_domains)
+  classes.each do |k|
     class_name = file_name(k[:name])
     class_file  = File.join(classes_dir, class_name)
     documents[dir][:class_files] << class_file
     desc "Generate file #{class_file}"
     file class_file do
       puts "#creating #{file_name(k[:name])}"
-      write_class(k, File.new(class_file, "w"))
+      write_class(k, File.new(class_file, "w"), classes)
     end
   end
   desc "Generate files for classes in #{dir}/classes."
@@ -139,7 +154,7 @@ end
 # Para crear el archivo PDF...
 Dir['documents/*'].each do |dir|
   document = dir + "/documento.pdf"
-  file document => figures + [document.sub(/.pdf$/, '.tex')] + [dir + '/classes.tex', dir + '/predicates.tex'] do
+  file document => figures + [document.sub(/.pdf$/, '.tex')] + [dir + '/classes.tex', dir + '/predicates.tex'] + schemas do
     system "cd #{dir} && pdflatex documento.tex"
     system "cd #{dir} && pdflatex documento.tex"
     system "cd #{dir} && pdflatex documento.tex"
