@@ -88,7 +88,8 @@ Dir['documents/*'].each do |dir|
   documents[dir] = { :predicate_files => [], :class_files => [] }
   predicates_dir = dir + "/predicates"  
   Dir.mkdir predicates_dir if Dir[predicates_dir].empty?
-  schema.elements(:predicates).each do |k|
+  included_domains = YAML::load_file(dir + '/domains.yaml')
+  schema.elements(:predicates, included_domains).each do |k|
     predicate_name = file_name(k[:name])
     predicate_file  = File.join(predicates_dir, predicate_name)
     documents[dir][:predicate_files] << predicate_file
