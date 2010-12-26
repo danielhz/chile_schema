@@ -1,0 +1,7 @@
+---
+- domain:
+  name: "Geolocalización"
+  schema:
+    "#Geolocalización":
+      "@latitud": "$geocoordenada"
+      "@longitud": "$geocoordenada"

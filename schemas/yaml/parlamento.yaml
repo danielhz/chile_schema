@@ -19,61 +19,6 @@
       "@fecha": "$fecha"
       "@causa": "$texto"
       "@sucesor": "#PersonaNatural"
-    "#Geolocalización":
-      "@latitud": "$geocoordenada"
-      "@longitud": "$geocoordenada"
-    "#Ciudad":
-      "@nombre": "$texto"
-      "@código": "$texto"
-      "@región": "#Región"
-      "@geolocalización": "#Geolocalización"
-    "#Región":
-      "@nombre": "$texto"
-      "@código": "$texto"
-      "@capital": "#Ciudad"
-    "#Provincia":
-      "@nombre": "$texto"
-      "@código": "$texto"
-      "@capital": "#Ciudad"
-      "@región": "#Región"
-    "#Circunscripción":
-      "@nombre": "$texto"
-      "@código": "$texto"
-      "@región": "#Región"
-    "#Distrito":
-      "@nombre": "$texto"
-      "@código": "$texto"
-      "@circunscripción": "#Circunscripción"
-    "#Comuna":
-      "@nombre": "$texto"
-      "@código": "$texto"
-      "@provincia": "#Provincia"
-      "@distrito": "#Distrito"
-    "#ProcesoEleccionario":
-      "@fecha": "$fecha"
-    "#Elección":
-      "@procesoEleccionario": "#ProcesoEleccionario"
-      "@cargo": "#Diputado #Senador"
-    "#Candidato":
-      "@persona": "#PersonaNatural"
-      "@vinculación": "#Pacto #Partido"
-      "@votos": "$número"
-      "@porcentaje": "$número"
-      "@resultado": "#ResultadoElectoral"
-    "#ResultadoElectoral":
-      "@nombre": "$texto"
-      "@descripción": "$texto"
-    "#Pacto":
-      "@nombre": "$texto"
-      "@integrante": "#Partido #PersonaNatural"
-    "#PartidoPolítico":
-      "@nombre": "$texto"
-      "@código": "$texto"
-    "#Militancia":
-      "@persona": "#PersonaNatural"
-      "@partidoPolítico": "#Partido"
-      "@fechaInicio": "$fecha"
-      "@fechaTérmino": "$fecha"
     "#LegislaturaCámaraDiputados":
       "@número": "$número"
       "@fechaInicio": "$fechaInicio"

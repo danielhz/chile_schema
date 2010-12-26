@@ -1,0 +1,29 @@
+---
+- domain:
+  name: "SistemaElectoral"
+  schema:
+    "#ProcesoEleccionario":
+      "@fecha": "$fecha"
+    "#Elección":
+      "@procesoEleccionario": "#ProcesoEleccionario"
+      "@cargo": "#Diputado #Senador"
+    "#Candidato":
+      "@persona": "#PersonaNatural"
+      "@vinculación": "#Pacto #Partido"
+      "@votos": "$número"
+      "@porcentaje": "$número"
+      "@resultado": "#ResultadoElectoral"
+    "#ResultadoElectoral":
+      "@nombre": "$texto"
+      "@descripción": "$texto"
+    "#Pacto":
+      "@nombre": "$texto"
+      "@integrante": "#Partido #PersonaNatural"
+    "#PartidoPolítico":
+      "@nombre": "$texto"
+      "@código": "$texto"
+    "#Militancia":
+      "@persona": "#PersonaNatural"
+      "@partidoPolítico": "#Partido"
+      "@fechaInicio": "$fecha"
+      "@fechaTérmino": "$fecha"

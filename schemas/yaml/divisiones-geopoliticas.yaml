@@ -1,0 +1,31 @@
+---
+- domain:
+  name: "DivisionesGeopolíticas"
+  schema:
+    "#Ciudad":
+      "@nombre": "$texto"
+      "@código": "$texto"
+      "@región": "#Región"
+      "@geolocalización": "#Geolocalización"
+    "#Región":
+      "@nombre": "$texto"
+      "@código": "$texto"
+      "@capital": "#Ciudad"
+    "#Provincia":
+      "@nombre": "$texto"
+      "@código": "$texto"
+      "@capital": "#Ciudad"
+      "@región": "#Región"
+    "#Circunscripción":
+      "@nombre": "$texto"
+      "@código": "$texto"
+      "@región": "#Región"
+    "#Distrito":
+      "@nombre": "$texto"
+      "@código": "$texto"
+      "@circunscripción": "#Circunscripción"
+    "#Comuna":
+      "@nombre": "$texto"
+      "@código": "$texto"
+      "@provincia": "#Provincia"
+      "@distrito": "#Distrito"
