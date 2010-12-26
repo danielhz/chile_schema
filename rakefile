@@ -114,7 +114,8 @@ end
 Dir['documents/*'].each do |dir|
   classes_dir = dir + "/classes"
   Dir.mkdir classes_dir if Dir[classes_dir].empty?
-  schema.elements(:classes).each do |k|
+  included_domains = YAML::load_file(dir + '/domains.yaml')
+  schema.elements(:classes, included_domains).each do |k|
     class_name = file_name(k[:name])
     class_file  = File.join(classes_dir, class_name)
     documents[dir][:class_files] << class_file
