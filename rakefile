@@ -73,11 +73,16 @@ def write_class(c, file, classes)
 end
 
 # Esta función escribe las asociaciones de un predicado en un archivo TEX.
-def write_predicate(pred, file)
+def write_predicate(pred, file, classes)
   file << "\\item[{\\sf Elementos relacionados:}] \\hfill \\\\\n"
   file << "  \\begin{tabular}{ll}\n"
   file << "    {\\em sujeto} & {\\em objeto} \\\\\n"
-  pred[:pairs].each { |e| file << "    \\#{e[0]} & \\#{e[1]} \\\\\n" }
+  pred[:pairs].each do |e|
+    puts "  #{pred[:name]}: #{e[0]} #{e[1]}"
+    if (classes.include? e[0] or /^\$/ === e[0]) and (classes.include? e[1] or /^\$/ === e[1])
+      file << "    \\#{e[0]} & \\#{e[1]} \\\\\n"
+    end
+  end
   file << "  \\end{tabular}\n"
   # unless File.exist?("node_" + file_name(pred))
   #   file = File.new("node_" + file_name(pred), 'w')
@@ -92,6 +97,13 @@ end
 schema  = Schema.new
 schemas = Dir['schemas/yaml/*.yaml']
 schemas.each { |yaml| schema.add(yaml) }
+
+# schema.elements(:classes).each do |k|
+#   file_name = file_name(k[:name])
+#   file file_name do
+    
+#   end
+# end
 
 documents = {}
 
@@ -108,7 +120,9 @@ Dir['documents/*'].each do |dir|
     desc "Generate file #{predicate_file}"
     file predicate_file do
       puts "#creating #{file_name(k[:name])}"
-      write_predicate(k, File.new(predicate_file, "w"))
+      f = File.new(predicate_file, "w")
+      write_predicate(k, f, schema.elements(:classes, included_domains).map{|i| i[:name]})
+      f.close
     end
   end
   desc "Generate files for predicates in #{dir}/predicates."
@@ -120,6 +134,7 @@ Dir['documents/*'].each do |dir|
     Dir[predicates_dir + "/*.tex"].sort.each do |k|
       f << "\\input{#{k.sub(dir + '/predicates/', '../../schemas/predicates/')}}\n"
     end
+    f.close
   end
 end
 
@@ -136,7 +151,9 @@ Dir['documents/*'].each do |dir|
     desc "Generate file #{class_file}"
     file class_file do
       puts "#creating #{file_name(k[:name])}"
-      write_class(k, File.new(class_file, "w"), classes)
+      File.new(class_file, "w")
+      write_class(k, f, classes.map{ |i| i[:name] })
+      f.close
     end
   end
   desc "Generate files for classes in #{dir}/classes."
@@ -148,6 +165,7 @@ Dir['documents/*'].each do |dir|
     Dir[classes_dir + "/*.tex"].sort.each do |k|
       f << "\\input{#{k.sub(dir + '/classes/', '../../schemas/classes/')}}\n"
     end
+    f.close
   end
 end
 
