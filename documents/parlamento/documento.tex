@@ -217,7 +217,96 @@ gráfica que es explicada en la sección \ref{diagramas}, donde también
 se presentan diagramas que facilitan la comprensión de los modelos
 propuestos.
 
+\section{Vocabulario local}
+\label{vocabulario-local}
+
+En la sección \ref{esquema} se proponen una serie de clases,
+predicados y tipos de datos. Éstos son identificados respectivamente
+con los prefijos \#, @ y \$. Los nombres propuestos permiten definir
+un vocabulario que se podría usar para construir los datos. Basta
+reemplazar los prefijos de estos términos por préfijos que los
+conviertan en IRIs válidas. La siguiente tabla muestra las
+transformaciones que es posible realizar para generar las IRI a partir
+de los nombres propuestos.
+
+\begin{center}
+  \begin{tabular}{cl}
+    {\sf Prefijo término esquema} & {\sf Prefijo IRI} \\
+    \# & \url{http://datos.bcn.cl/clase/} \\
+    @ & \url{http://datos.bcn.cl/predicado/} \\
+    \$ & \url{http://datos.bcn.cl/tipo/} \\
+  \end{tabular}
+\end{center}
+
+Los nombres de dominio y las palabras ``clase'', ``predicado'' y
+``tipo'' son tan sólo una propuesta y bien podría utilizarse, por
+ejemplo, términos anglosajones.
+
+Otra opción es introducir el versionamiento en los elementos del
+vocabulario, por ejemplo introduciendo el número de versión en alguna
+parte de las IRI, como por ejemplo:
+
+\begin{center}
+  \begin{tabular}{cl}
+    {\sf Prefijo término esquema} & {\sf Prefijo IRI} \\
+    \# & \url{http://datos.bcn.cl/clase/1/} \\
+    @ & \url{http://datos.bcn.cl/predicado/1/} \\
+    \$ & \url{http://datos.bcn.cl/tipo/1/} \\
+  \end{tabular}
+\end{center}
+
+De este modo, la definición de la URI para la clase \#PersonaNatural
+podría ser:
+
+\begin{flushleft}
+\url{http://data.bcn.cl/clase/PersonaNatural}
+\end{flushleft}
+
+La identificación de las versiones es algo común en varios de los
+vocabularios más usados y obedece a la intención de distinguir
+términos que no poseen exactamente el mismo significado. Por ejemplo,
+en los vocabularios de la Iniciativa Dublin Core se incorpora la
+versión antes del nombre del elemento definido. Así, la URI del
+elemento ``contributor'' en la versión 1.1 es la siguiente:
+
+\begin{flushleft}
+  \url{http://purl.org/dc/elements/1.1/contributor}
+\end{flushleft}
+
+El problema que genera la diferenciación de las URI en distintas
+versiones es que en algunos casos se puede desear tratar los elementos
+tal cual fueran sinónimos, lo que exige un mayor esfuerzo al momento
+de la integración de la información. Los dilemas sobre la generación
+de identificadores globales y su asociación a objetos que pueden en
+algunos casos ser considerados idénticos y en otros diferentes, son
+estudiados en \cite{uri-mitos}.
+
+Nuestro idioma, el español, impone dificultades extra al uso de un
+vocabulario local. Las vocales con tilde (á, é, í, ó, ú), la ñ y los
+puntos sobre la ü no son representables en ASCCI, lo que forma la base
+de la definición de dominios y URIs. A pesar de la incorporación de
+las IRI, el uso de estos caracteres aún presenta problemas. En HTML 4,
+el W3C recomienda que estos sean escapados usando los valores UTF-8 de
+los caracteres precedidos del
+símbolo de porcentaje (\%) \cite{scaped-utf8}, sin embargo esta
+técnica introduce problemas en algunas serializaciones de RDF como la
+XML, dónde los nómbres de los elementos no pueden incluir el símbolo
+de porcentaje \cite{i18n-sw}. Para incluir caracteres con tilde lo
+que se recomienda es utilizar la codificación UTF-8 e IRIs
+\cite{utf8-iri}.
+
+El Principado de Asturias ha resuelto publicar sus datos removiendo
+las tildes en los vocabularios que definen. Por otra parte, la
+recomendación en la definición del Administrador de Esquemas y
+Metadatos es omitir las tildes, pero no convierte ello en una
+obligación y no propone una forma de reemplazar las ñ. Al no ser
+obligatorio usar caracteres ASCCI en los esquemas XML, en AEM podrían
+existir elementos con estos caracteres extendidos, lo que de todos
+modos obliga a que las aplicaciones soporten un esquema de caracteres
+más amplio, como lo es UTF-8.
+
 \section{Identificación de datos a modelar}
+\label{esquema}
 
 Tal como se propuso en la sección \ref{tecnica-de-modelado}, las
 componentes de los triples del esquema son o clases o predicados. No
@@ -245,6 +334,19 @@ y las propiedades salientes. Cada propiedad entrante de una clase $A$,
 corresponde a un par $(p,O)$ tal que $(A,p,O)$ está en el modelo y
 cada propiedad saliente corresponde a un par $(p,S)$ tal que $(S,p,A)$
 está en el modelo.
+
+Junto con las propiedades, entrantes y salientes, de las clases, para
+cada una de ellas se indicarán vocabularios a usar para el nombre de
+la clase (URI de la clase) y una recomendación para generar las
+URI.
+
+Con respecto a las URIs para clases y predicados, si bien se pueden
+utilizar los elementos del vocabulario local (ver sección
+\ref{vocabulario-local}), la incorporación de vocabularios externos
+ayudaría a la integración de los datos con datos de otras fuentes. No
+obstante, la introducción de otros elementos de vocabulario introduce
+la disyuntiva entre si estos se agregan en reemplazo del vocabulario
+local o si se agregan para complementar el vocabulario local.
 
 \input{classes.tex}
 
@@ -295,5 +397,23 @@ visualizaciones interesantes.
 \begin{center}
   \includegraphics[width=\textwidth]{diagrams/dia-elecciones.pdf}
 \end{center}
+
+\begin{thebibliography}{99}
+\bibitem{uri-mitos} Booth, D.
+  {\em URIs and the Myth of Resource Identity},
+  Proceedings of the Workshop on Identity, Meaning and the Web (IMW06)
+  at International World Wide Web Conference,
+  Edinburgh, Scotland, ACM, 2006.
+\bibitem{scaped-utf8} Dave Raggett, Arnaud Le Hors, Ian Jacobs,
+  {\em HTML 4.01 Specification}, Appendix B: Performance,
+  Implementation, and Design Notes,
+  Technical Reports, W3C, 2009. \\
+  {\small\url{http://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.2}}
+\bibitem{i18n-sw} Sören Auer, Matthias Weidl, Jens Lehmann, Amrapali
+  J. Zaveri, Key-Sun Choi, {\em I18n of Semantic Web Applications}.
+\bibitem{utf8-iri} Martin J. Dürst,
+  {\em Internationalized Resource Identifiers: From Specification to Testing},
+  19th International Unicode Conference, September 2001.
+\end{thebibliography}
 
 \end{document}

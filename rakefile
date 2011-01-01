@@ -152,6 +152,7 @@ Dir['documents/*'].each do |dir|
     file class_file do
       puts "#creating #{file_name(k[:name])}"
       File.new(class_file, "w")
+      f = File.new(class_file, "w")
       write_class(k, f, classes.map{ |i| i[:name] })
       f.close
     end
@@ -191,6 +192,7 @@ task :clean do
   documents.keys.each do |dir|
     system "rm -f #{documents[dir][:class_files].join(' ')}"
     system "rm -f #{documents[dir][:predicate_files].join(' ')}"
+    system "rm -f #{dir}/*~ #{dir}/*.aux #{dir}/*.toc #{dir}/*.log #{dir}/*.lof"
   end
 end
 

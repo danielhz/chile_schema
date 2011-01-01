@@ -8,3 +8,7 @@
       "@género": "$texto"
       "@fechaNacimiento": "$fecha"
       "@rut": "$rut"
+    # "#PersonaNatural":
+    #   "@nombre": "$texto"
+    #   "@nombreFantasía": "$texto"
+    #   "@rut": "$rut"

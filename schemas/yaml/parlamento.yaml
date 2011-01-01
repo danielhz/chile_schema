@@ -32,6 +32,7 @@
       "@número": "$número"
       "@fecha": "$fecha"
     "#AsistenciaSesiónParlamentaria":
+      "@sesión": "#SesiónParlamentaria"
       "@parlamentario": "#PersonaNatural"
       "@asiste": "$booleano"
       "@observación": "$texto"

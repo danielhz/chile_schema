@@ -1,0 +1,23 @@
+---
+- domain:
+  name: "Organismos"
+  schema:
+    "#OrganismoPúblico":
+      "@nombre": "$texto"
+      "@código": "$texto"
+      "@objetivo": "$texto"
+      "@fechaInicio": "$fecha"
+      "@fechaTérmino": "$fecha"
+      "@normativa": "#Normativa"
+      "@organismo": "#OrganismoPúblico"
+      "@superiorDirecto": "#OrganismoPúblico #CargoPúblico"
+      "@cliente": "#OrganismoPúblico #PersonaJurídica #SegmentoCiudadano"
+    "#CargoPúblico":
+      "@nombre": "$texto"
+      "@código": "$texto"
+      "@objetivo": "$texto"
+      "@fechaInicio": "$fecha"
+      "@fechaTérmino": "$fecha"
+      "@normativa": "#Normativa"
+      "@organismo": "#OrganismoPúblico"
+      "@superiorDirecto": "#OrganismoPúblico #CargoPúblico"
